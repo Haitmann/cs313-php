@@ -1,0 +1,21 @@
+{
+  "name": "cs313-nodejs",
+  "version": "1.0.0",
+  "description": "Project to retrieve world cup history data.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Diogo Haitmann",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^3.0.0",
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "express.js": "^1.0.0",
+    "mustache-express": "^1.2.7",
+    "pg": "^7.4.3"
+  }
+}
