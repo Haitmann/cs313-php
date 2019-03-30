@@ -7,12 +7,68 @@
 
         });
 
+        document.getElementById("brackets-display").addEventListener("mouseenter", function(e) {
+
+            if (document.getElementById('navigation').classList.contains('sidebar-open')) {
+                addClass();
+            }
+
+        });
+
+        document.getElementById("scorer-display").addEventListener("mouseenter", function(e) {
+
+            if (document.getElementById('navigation').classList.contains('sidebar-open')) {
+                addClass();
+            }
+        });
+
 
         function selectChampion() {
             
+            document.getElementById('brackets-display').style.display = 'none';
+            document.getElementById('scorer-display').style.display = 'none';
             document.getElementById('champions-display').style.display = '';
 
+            if (document.getElementById('bracket').classList.contains('check-on')) {
+                document.getElementById('bracket').classList.toggle('check-on');
+            }
+            if (document.getElementById('scorer').classList.contains('check-on')) {
+                document.getElementById('scorer').classList.toggle('check-on');
+            }
             document.getElementById('champion').classList.toggle('check-on');
+        }
+
+        function selectBracket() {
+            document.getElementById('champions-display').style.display = 'none';
+            document.getElementById('scorer-display').style.display = 'none';
+            document.getElementById('brackets-display').style.display = '';
+
+
+            if (document.getElementById('champion').classList.contains('check-on')) {
+                document.getElementById('champion').classList.toggle('check-on');
+
+            }
+            if (document.getElementById('scorer').classList.contains('check-on')) {
+                document.getElementById('scorer').classList.toggle('check-on');
+            }
+            document.getElementById('bracket').classList.toggle('check-on');
+        }
+
+        function selectScorer() {
+
+            document.getElementById('champions-display').style.display = 'none';
+            document.getElementById('brackets-display').style.display = 'none';
+            document.getElementById('scorer-display').style.display = '';
+
+            if (document.getElementById('champion').classList.contains('check-on')) {
+                document.getElementById('champion').classList.toggle('check-on');
+            }
+            if (document.getElementById('bracket').classList.contains('check-on')) {
+                document.getElementById('bracket').classList.toggle('check-on');
+            }
+            document.getElementById('scorer').classList.toggle('check-on');
+
+
         }
 
 
@@ -29,6 +85,35 @@
             var t = document.getElementsByClassName('fa-trophy')[0];
             t.style.webkitTransform = 'rotate(0deg)';
         }
+
+        function bracketIn() {
+            var t = document.getElementsByClassName('fa-sitemap')[0];
+            var check = document.getElementsByClassName('check')[1];
+            check.style.color = 'white';
+            t.style.webkitTransform = 'rotate(90deg)';
+        }
+
+        function bracketOut() {
+            var check = document.getElementsByClassName('check')[1];
+            check.style.color = '#d20a11';
+            var t = document.getElementsByClassName('fa-sitemap')[0];
+            t.style.webkitTransform = 'rotate(0deg)';
+        }
+
+        function scorerIn() {
+            var t = document.getElementsByClassName('fa-futbol')[0];
+            var check = document.getElementsByClassName('check')[2];
+            check.style.color = 'white';
+            t.style.webkitTransform = 'rotate(360deg)';
+        }
+
+        function scorerOut() {
+            var check = document.getElementsByClassName('check')[2];
+            check.style.color = '#d20a11';
+            var t = document.getElementsByClassName('fa-futbol')[0];
+            t.style.webkitTransform = 'rotate(0deg)';
+        }
+
 
         function getLastVisitedDate() {
 
@@ -107,6 +192,88 @@
 
             var hTeamBox = document.getElementById('home-team');
             var aTeamBox = document.getElementById('away-team');
+
+
+            // brakets variables
+
+            var bform = document.getElementById('bform'),
+                brackets = document.getElementById('brackets'),
+                round16 = document.getElementById('round16'),
+                quarterfinals = document.getElementById('quarterfinals'),
+                semifinals = document.getElementById('semifinals'),
+                final = document.getElementById('final'),
+                bracketScreen = document.getElementById('screen-display');
+
+            bracketScreen.style.opacity = '0';
+
+            bform.addEventListener('submit', function(b) {
+
+                b.preventDefault();
+
+                var request = new XMLHttpRequest(),
+                    target = '/getWorldCupMatchDetails?year=' + brackets.value;
+
+                request.open('GET', target);
+
+                round16.innerHTML = '';
+                if (bracketScreen.classList.contains('rounds')) {
+                    bracketScreen.style.opacity = '0';
+                    bracketScreen.classList.remove('rounds');
+                    
+                }
+
+                quarterfinals.innerHTML = '';
+                semifinals.innerHTML = '';
+                final.innerHTML = '';
+
+                request.send();
+
+                request.onreadystatechange = function() {
+
+                    // Do nothing until the request is finished.
+                    if (request.readyState === DONE) {
+
+                        if (request.status === OKAY) {
+
+                            let dataObj = JSON.parse(request.responseText);
+
+                            console.log(dataObj);
+                            var i;
+                            for (i = 0; i < dataObj.length; i++) {
+
+                                if (dataObj[i].match_type == 'round16') {
+
+
+                                    round16.innerHTML += "<div class='team-bracket'>" +
+                                        "<div id='team-1-flag' class='team flag'><img src='http://www.countryflags.io/" + dataObj[i].home_team_flag + "/flat/64.png' id='arg'></div>" +
+                                        "<div id='team-1-name' class='team country-name'>" + dataObj[i].home_team + "</div><div id='team-1-goals' class='team team-goals'>" + dataObj[i].home_team_goals + "</div></div><br><div class='team-bracket'><div id='team-1-flag' class='team flag'><img src='http://www.countryflags.io/" + dataObj[i].away_team_flag + "/flat/64.png' id='arg'></div><div id='team-1-name' class='team country-name'>" + dataObj[i].away_team + "</div><div id='team-1-goals' class='team team-goals'>" + dataObj[i].away_team_goals + "</div></div><div class='divider'></div>";
+
+
+
+                                } else if (dataObj[i].match_type == 'quarterfinals') {
+
+                                    quarterfinals.innerHTML += "<div class='team-bracket'>" + "<div id='team-1-flag' class='team flag'><img src='http://www.countryflags.io/" + dataObj[i].home_team_flag + "/flat/64.png' id='arg'></div>" + "<div id='team-1-name' class='team country-name'>" + dataObj[i].home_team + "</div><div id='team-1-goals' class='team team-goals'>" + dataObj[i].home_team_goals + "</div></div><br><div class='team-bracket'><div id='team-1-flag' class='team flag'><img src='http://www.countryflags.io/" + dataObj[i].away_team_flag + "/flat/64.png' id='arg'></div><div id='team-1-name' class='team country-name'>" + dataObj[i].away_team + "</div><div id='team-1-goals' class='team team-goals'>" + dataObj[i].away_team_goals + "</div></div><div class='divider'></div>";
+                                } else if (dataObj[i].match_type == 'semifinals') {
+                                    semifinals.innerHTML += "<div class='team-bracket'>" +
+                                        "<div id='team-1-flag' class='team flag'><img src='http://www.countryflags.io/" + dataObj[i].home_team_flag + "/flat/64.png' id='arg'></div>" +
+                                        "<div id='team-1-name' class='team country-name'>" + dataObj[i].home_team + "</div><div id='team-1-goals' class='team team-goals'>" + dataObj[i].home_team_goals + "</div></div><br><div class='team-bracket'><div id='team-1-flag' class='team flag'><img src='http://www.countryflags.io/" + dataObj[i].away_team_flag + "/flat/64.png' id='arg'></div><div id='team-1-name' class='team country-name'>" + dataObj[i].away_team + "</div><div id='team-1-goals' class='team team-goals'>" + dataObj[i].away_team_goals + "</div></div><div class='divider'></div>";
+                                } else if (dataObj[i].match_type == 'final') {
+                                    final.innerHTML += "<div class='team-bracket'>" +
+                                        "<div id='team-1-flag' class='team flag'><img src='http://www.countryflags.io/" + dataObj[i].home_team_flag + "/flat/64.png' id='arg'></div>" +
+                                        "<div id='team-1-name' class='team country-name'>" + dataObj[i].home_team + "</div><div id='team-1-goals' class='team team-goals'>" + dataObj[i].home_team_goals + "</div></div><br><div class='team-bracket'><div id='team-1-flag' class='team flag'><img src='http://www.countryflags.io/" + dataObj[i].away_team_flag + "/flat/64.png' id='arg'></div><div id='team-1-name' class='team country-name'>" + dataObj[i].away_team + "</div><div id='team-1-goals' class='team team-goals'>" + dataObj[i].away_team_goals + "</div></div><div class='divider'></div>";
+                                }
+                            }
+                            //                            round16.classList.toggle('appear');
+                            setTimeout(function() {
+                                bracketScreen.classList.add('rounds');
+                                bracketScreen.style.opacity = '1';
+                            }, 500);
+                        } else {
+                            console.log(JSON.stringify(ERROR));
+                        }
+                    }
+                };
+            });
 
 
             // Listen for submission events on the example form.
